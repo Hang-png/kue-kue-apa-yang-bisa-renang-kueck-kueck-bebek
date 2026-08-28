@@ -699,27 +699,27 @@
     </div>
   </div>
 
-<!-- Modal Popup untuk Photostack -->
-<div class="modal-overlay hidden" id="photoModal">
-  <div class="modal-content photostack-modal">
-    <button class="modal-close" id="closePhotoModal">&times;</button>
-    <div class="modal-title">📸 Momen-Momen mu 📸</div>
-    <div class="photo-grid">
-      <div class="photo-card" data-image="foto1.jpg" data-caption="awokawoawko 😆">
-        <img src="foto1.jpg" alt="foto lucu 1" draggable="false">
-        <div class="message">awokawoawko 😆</div>
-      </div>
-      <div class="photo-card" data-image="foto2.jpg" data-caption="kapan nyusul sama cio">
-        <img src="foto2.jpg" alt="foto lucu 2" draggable="false">
-        <div class="message">kapan nyusul sama cio</div>
-      </div>
-      <div class="photo-card" data-image="foto3.jpg" data-caption="semangat kakak ilustrator wkwk">
-        <img src="foto3.jpg" alt="foto lucu 3" draggable="false">
-        <div class="message">semangat kakak ilustrator wkwk</div>
+  <!-- Modal Popup untuk Photostack -->
+  <div class="modal-overlay hidden" id="photoModal">
+    <div class="modal-content photostack-modal">
+      <button class="modal-close" id="closePhotoModal">&times;</button>
+      <div class="modal-title">📸 Momen-Momen mu 📸</div>
+      <div class="photo-grid">
+        <div class="photo-card" data-image="foto1.jpg" data-caption="awokawoawko 😆">
+          <img src="foto1.jpg" alt="foto lucu 1" draggable="false">
+          <div class="message">awokawoawko 😆</div>
+        </div>
+        <div class="photo-card" data-image="foto2.jpg" data-caption="kapan nyusul sama cio">
+          <img src="foto2.jpg" alt="foto lucu 2" draggable="false">
+          <div class="message">kapan nyusul sama cio</div>
+        </div>
+        <div class="photo-card" data-image="foto3.jpg" data-caption="semangat kakak ilustrator wkwk">
+          <img src="foto3.jpg" alt="foto lucu 3" draggable="false">
+          <div class="message">semangat kakak ilustrator wkwk</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
   <!-- Lightbox untuk foto besar -->
   <div class="lightbox-overlay hidden" id="lightboxOverlay">
@@ -767,7 +767,7 @@
       let audioElement = null;
       
       // ====== MUSIK LOKAL ======
-      const musicUrl = 'mis-u.mp3'; // <-- LOKAL FILE
+      const musicUrl = 'mis-u.mp3'; // <-- File musik di root
       
       function playMusic() {
         if (!audioElement) {
@@ -776,7 +776,7 @@
           audioElement.volume = 0.6;
         }
         audioElement.play().catch(err => {
-          console.log('Gagal memutar musik lokal:', err);
+          console.log('Gagal memutar musik:', err);
         });
       }
 
@@ -860,24 +860,20 @@
       }
 
       // ====== MODAL FUNCTIONS ======
-      // Buka modal giftbox
       function openGiftboxModal() {
         giftboxModal.classList.remove('hidden');
         generateConfetti(30);
       }
 
-      // Tutup modal giftbox
       function closeGiftboxModalFunc() {
         giftboxModal.classList.add('hidden');
       }
 
-      // Buka modal photo
       function openPhotoModal() {
         photoModal.classList.remove('hidden');
         generateConfetti(50);
       }
 
-      // Tutup modal photo
       function closePhotoModalFunc() {
         photoModal.classList.add('hidden');
       }
@@ -900,14 +896,12 @@
       });
 
       // ====== GIFTBOX INTERACTIONS ======
-      // Klik giftbox kecil (di area utama)
       giftbox.addEventListener('click', () => {
         if (!isCakeBlown) return;
         giftbox.classList.add('hidden');
         openGiftboxModal();
       });
 
-      // Klik giftbox besar (di dalam modal)
       giftboxLarge.addEventListener('click', () => {
         closeGiftboxModalFunc();
         setTimeout(() => {
@@ -915,7 +909,7 @@
         }, 300);
       });
 
-      // Keyboard support untuk giftbox
+      // Keyboard support
       giftbox.setAttribute('tabindex', '0');
       giftbox.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !giftbox.classList.contains('hidden')) {
@@ -932,14 +926,22 @@
 
       // ====== LIGHTBOX FUNCTIONS ======
       function openLightbox(imageSrc, caption) {
+        console.log('Membuka gambar:', imageSrc);
         lightboxImage.src = imageSrc;
         lightboxCaption.textContent = caption;
+        
+        lightboxImage.onerror = function() {
+          console.error('Gagal memuat gambar:', imageSrc);
+          lightboxCaption.textContent = '⚠️ Gambar tidak ditemukan';
+        };
+        
         lightboxOverlay.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
       }
 
       function closeLightbox() {
         lightboxOverlay.classList.add('hidden');
+        lightboxImage.src = '';
         document.body.style.overflow = 'auto';
       }
 
@@ -949,15 +951,19 @@
         card.addEventListener('click', () => {
           const imageSrc = card.getAttribute('data-image');
           const caption = card.getAttribute('data-caption');
+          console.log('Klik foto:', imageSrc, caption);
           openLightbox(imageSrc, caption);
         });
       });
 
       // Close lightbox
-      lightboxClose.addEventListener('click', closeLightbox);
-      
+      lightboxClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeLightbox();
+      });
+
       lightboxOverlay.addEventListener('click', (e) => {
-        if (e.target === lightboxOverlay || e.target === lightboxImage) {
+        if (e.target === lightboxOverlay) {
           closeLightbox();
         }
       });
