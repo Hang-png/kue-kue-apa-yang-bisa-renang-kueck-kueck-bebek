@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>🎨 Free Drawing Board - Download</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(145deg, #e8f4f8 0%, #fff3e6 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+    .drawing-header {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .drawing-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #6b4f3c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff6ef;
+      border: 2px solid #f3cdb5;
+      color: #6b4f3c;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 40px;
+      text-decoration: none;
+      transition: all 0.25s;
+      font-size: 0.95rem;
+    }
+    .btn-back:hover {
+      background: #ffe8da;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+    }
+    .canvas-container {
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      border-radius: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 0 2px #ffe0cc inset;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 20px;
+      background: #fffaf5;
+      cursor: crosshair;
+      border: 2px solid #f3cdb5;
+      touch-action: none;
+    }
+    .toolbar {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .tool-btn {
+      background: #fff6ef;
+      border: 2px solid #f3cdb5;
+      color: #6b4f3c;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    .tool-btn:hover {
+      background: #ffe8da;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+    }
+    .tool-btn.active {
+      background: #ffdbb5;
+      border-color: #f0ba8a;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .tool-btn.download-btn {
+      background: linear-gradient(145deg, #a8e6cf, #d4edda);
+      border-color: #7bc8a4;
+      color: #2d6a4f;
+      font-weight: 700;
+    }
+    .tool-btn.download-btn:hover {
+      background: linear-gradient(145deg, #8ed9b5, #b8e0c0);
+      box-shadow: 0 10px 20px rgba(123, 200, 164, 0.4);
+    }
+    .color-picker {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid #f3cdb5;
+      cursor: pointer;
+      padding: 0;
+      overflow: hidden;
+    }
+    .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+    .color-picker::-webkit-color-swatch { border: none; border-radius: 50%; }
+    .size-slider {
+      width: 100px;
+      accent-color: #f08080;
+      cursor: pointer;
+    }
+    .size-label {
+      font-size: 0.85rem;
+      color: #9b7b6b;
+      font-weight: 600;
+    }
+    .name-input {
+      background: #fffaf5;
+      border: 2px solid #f3cdb5;
+      border-radius: 30px;
+      padding: 10px 18px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #6b4f3c;
+      outline: none;
+      width: 180px;
+      transition: all 0.25s;
+    }
+    .name-input:focus {
+      border-color: #f08080;
+      box-shadow: 0 0 0 3px rgba(240,128,128,0.2);
+    }
+    .name-input::placeholder { color: #c4a992; }
+    .history-section {
+      width: 100%;
+      max-width: 900px;
+      margin-top: 20px;
+    }
+    .history-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #6b4f3c;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .history-card {
+      background: #fffcf6;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08), 0 0 0 2px #ffe0cc inset;
+      padding: 12px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .history-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 30px rgba(0,0,0,0.12);
+    }
+    .history-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #fde6d8;
+      cursor: pointer;
+    }
+    .history-card .author {
+      margin-top: 8px;
+      font-weight: 600;
+      color: #6b4f3c;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .history-card .time {
+      font-size: 0.75rem;
+      color: #b48c7a;
+      margin-top: 2px;
+    }
+    .history-card .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .history-card .btn-download-small {
+      flex: 1;
+      background: #d4edda;
+      border: none;
+      color: #2d6a4f;
+      padding: 6px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .history-card .btn-download-small:hover {
+      background: #b8e0c0;
+    }
+    .history-card .btn-delete {
+      flex: 1;
+      background: #ffe0e0;
+      border: none;
+      color: #d9534f;
+      padding: 6px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .history-card .btn-delete:hover {
+      background: #ffb3b3;
+      color: white;
+    }
+    .empty-history {
+      text-align: center;
+      color: #b48c7a;
+      font-size: 1rem;
+      padding: 30px;
+      background: #fffaf5;
+      border-radius: 20px;
+      border: 2px dashed #f3cdb5;
+    }
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #4caf50;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 15px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @media (max-width: 600px) {
+      .drawing-title { font-size: 1.5rem; }
+      .toolbar { gap: 6px; }
+      .tool-btn { padding: 8px 12px; font-size: 0.8rem; }
+      .name-input { width: 130px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="drawing-header">
+    <div class="drawing-title">
+      <i class="fas fa-paint-brush" style="color: #f08080;"></i>
+      Free Drawing Board
+    </div>
+    <a href="index.html" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Kembali ke Halaman Utama
+    </a>
+  </div>
+
+  <div class="canvas-container">
+    <canvas id="drawingCanvas"></canvas>
+  </div>
+
+  <div class="toolbar">
+    <input type="color" id="colorPicker" class="color-picker" value="#6b4f3c" title="Pilih warna">
+    
+    <label class="size-label">
+      <i class="fas fa-circle" style="font-size: 0.7rem;"></i>
+      Ukuran:
+    </label>
+    <input type="range" id="sizeSlider" class="size-slider" min="1" max="30" value="5">
+    <span class="size-label" id="sizeDisplay">5px</span>
+
+    <button class="tool-btn" id="btnEraser" title="Hapus">
+      <i class="fas fa-eraser"></i> Penghapus
+    </button>
+
+    <button class="tool-btn" id="btnClear" title="Bersihkan kanvas">
+      <i class="fas fa-trash"></i> Bersihkan
+    </button>
+
+    <button class="tool-btn" id="btnUndo" title="Undo">
+      <i class="fas fa-undo"></i> Undo
+    </button>
+
+    <input type="text" class="name-input" id="nameInput" placeholder="Nama kamu..." maxlength="30">
+
+    <button class="tool-btn" id="btnSave" title="Simpan ke histori">
+      <i class="fas fa-save"></i> Simpan
+    </button>
+
+    <button class="tool-btn download-btn" id="btnDownload" title="Download gambar">
+      <i class="fas fa-download"></i> Download PNG
+    </button>
+  </div>
+
+  <div class="history-section">
+    <div class="history-title">
+      <i class="fas fa-history" style="color: #f08080;"></i>
+      Histori Gambar
+    </div>
+    <div id="historyGrid" class="history-grid"></div>
+  </div>
+
+  <script>
+    (function(){
+      const canvas = document.getElementById('drawingCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas size
+      function resizeCanvas() {
+        const container = canvas.parentElement;
+        const width = container.clientWidth - 4;
+        const height = 400;
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Fill background
+        ctx.fillStyle = '#fffaf5';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      resizeCanvas();
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        // Restore last saved state if available
+        if (undoStack.length > 0) {
+          const img = new Image();
+          img.onload = () => {
+            ctx.drawImage(img, 0, 0);
+          };
+          img.src = undoStack[undoStack.length - 1];
+        }
+      });
+
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+      let currentColor = '#6b4f3c';
+      let currentSize = 5;
+      let isEraser = false;
+      let undoStack = [];
+      let maxUndo = 20;
+
+      const colorPicker = document.getElementById('colorPicker');
+      const sizeSlider = document.getElementById('sizeSlider');
+      const sizeDisplay = document.getElementById('sizeDisplay');
+      const btnEraser = document.getElementById('btnEraser');
+      const btnClear = document.getElementById('btnClear');
+      const btnUndo = document.getElementById('btnUndo');
+      const btnSave = document.getElementById('btnSave');
+      const btnDownload = document.getElementById('btnDownload');
+      const nameInput = document.getElementById('nameInput');
+      const historyGrid = document.getElementById('historyGrid');
+
+      // Initialize background
+      ctx.fillStyle = '#fffaf5';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      saveState();
+
+      colorPicker.addEventListener('input', (e) => {
+        currentColor = e.target.value;
+        if (isEraser) { isEraser = false; btnEraser.classList.remove('active'); }
+      });
+
+      sizeSlider.addEventListener('input', (e) => {
+        currentSize = parseInt(e.target.value);
+        sizeDisplay.textContent = currentSize + 'px';
+      });
+
+      btnEraser.addEventListener('click', () => {
+        isEraser = !isEraser;
+        btnEraser.classList.toggle('active');
+      });
+
+      btnClear.addEventListener('click', () => {
+        if (confirm('Bersihkan kanvas?')) {
+          ctx.fillStyle = '#fffaf5';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          saveState();
+        }
+      });
+
+      btnUndo.addEventListener('click', undo);
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        let clientX, clientY;
+        if (e.touches) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+        return {
+          x: (clientX - rect.left) * scaleX,
+          y: (clientY - rect.top) * scaleY
+        };
+      }
+
+      function startDrawing(e) {
+        e.preventDefault();
+        isDrawing = true;
+        const pos = getPos(e);
+        lastX = pos.x;
+        lastY = pos.y;
+      }
+
+      function draw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.strokeStyle = isEraser ? '#fffaf5' : currentColor;
+        ctx.lineWidth = isEraser ? currentSize * 3 : currentSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+        lastX = pos.x;
+        lastY = pos.y;
+      }
+
+      function stopDrawing() {
+        if (isDrawing) {
+          isDrawing = false;
+          saveState();
+        }
+      }
+
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseleave', stopDrawing);
+      canvas.addEventListener('touchstart', startDrawing);
+      canvas.addEventListener('touchmove', draw);
+      canvas.addEventListener('touchend', stopDrawing);
+
+      function saveState() {
+        undoStack.push(canvas.toDataURL());
+        if (undoStack.length > maxUndo) {
+          undoStack.shift();
+        }
+      }
+
+      function undo() {
+        if (undoStack.length <= 1) return;
+        undoStack.pop();
+        const img = new Image();
+        img.onload = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+        };
+        img.src = undoStack[undoStack.length - 1];
+      }
+
+      // ====== DOWNLOAD FUNCTION ======
+      function downloadCanvas(filename) {
+        const dataURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = filename || 'gambar-ku.png';
+        link.href = dataURL;
+        link.click();
+        
+        // Show notification
+        showNotification('✅ Gambar berhasil di-download!');
+      }
+
+      btnDownload.addEventListener('click', () => {
+        const name = nameInput.value.trim() || 'gambar';
+        const filename = name.toLowerCase().replace(/\s+/g, '-') + '.png';
+        downloadCanvas(filename);
+      });
+
+      // ====== SAVE TO HISTORY ======
+      btnSave.addEventListener('click', () => {
+        const name = nameInput.value.trim() || 'Anonim';
+        const dataURL = canvas.toDataURL('image/png');
+        
+        // Save to localStorage
+        let drawings = JSON.parse(localStorage.getItem('drawings') || '[]');
+        drawings.unshift({
+          id: Date.now(),
+          name: name,
+          image: dataURL,
+          time: new Date().toLocaleString('id-ID')
+        });
+        
+        // Limit to 50 drawings
+        if (drawings.length > 50) drawings = drawings.slice(0, 50);
+        
+        localStorage.setItem('drawings', JSON.stringify(drawings));
+        
+        // Clear name input
+        nameInput.value = '';
+        
+        // Refresh history
+        loadHistory();
+        
+        // Show notification
+        showNotification('💾 Gambar berhasil disimpan ke histori!');
+      });
+
+      // ====== NOTIFICATION ======
+      function showNotification(message) {
+        const notif = document.createElement('div');
+        notif.className = 'notification';
+        notif.innerHTML = message;
+        document.body.appendChild(notif);
+        
+        setTimeout(() => {
+          notif.remove();
+        }, 3000);
+      }
+
+      // ====== LOAD HISTORY ======
+      function loadHistory() {
+        const drawings = JSON.parse(localStorage.getItem('drawings') || '[]');
+        historyGrid.innerHTML = '';
+        
+        if (drawings.length === 0) {
+          historyGrid.innerHTML = '<div class="empty-history">📭 Belum ada gambar yang disimpan. Yuk gambar dulu!</div>';
+          return;
+        }
+        
+        drawings.forEach(drawing => {
+          const card = document.createElement('div');
+          card.className = 'history-card';
+          card.innerHTML = `
+            <img src="${drawing.image}" alt="Gambar ${drawing.name}" loading="lazy">
+            <div class="author">
+              <i class="fas fa-user-circle"></i> ${drawing.name}
+            </div>
+            <div class="time">🕐 ${drawing.time}</div>
+            <div class="card-actions">
+              <button class="btn-download-small" data-image="${drawing.image}" data-name="${drawing.name}">
+                <i class="fas fa-download"></i> Download
+              </button>
+              <button class="btn-delete" data-id="${drawing.id}">
+                <i class="fas fa-trash"></i> Hapus
+              </button>
+            </div>
+          `;
+          historyGrid.appendChild(card);
+        });
+        
+        // Add download listeners for history items
+        document.querySelectorAll('.btn-download-small').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const imageData = e.target.getAttribute('data-image');
+            const name = e.target.getAttribute('data-name') || 'gambar';
+            const link = document.createElement('a');
+            link.download = name.toLowerCase().replace(/\s+/g, '-') + '.png';
+            link.href = imageData;
+            link.click();
+            showNotification('✅ Gambar dari histori berhasil di-download!');
+          });
+        });
+        
+        // Add delete listeners
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = parseInt(e.target.getAttribute('data-id'));
+            if (confirm('Hapus gambar ini dari histori?')) {
+              let drawings = JSON.parse(localStorage.getItem('drawings') || '[]');
+              drawings = drawings.filter(d => d.id !== id);
+              localStorage.setItem('drawings', JSON.stringify(drawings));
+              loadHistory();
+              showNotification('🗑️ Gambar dihapus dari histori');
+            }
+          });
+        });
+      }
+
+      // Load history on page load
+      loadHistory();
+    })();
+  </script>
+</body>
+</html>
