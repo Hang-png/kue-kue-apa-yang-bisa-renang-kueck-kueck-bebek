@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>🎨 Free Drawing Board</title>
+  <title>Drawing Board</title>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -35,6 +35,39 @@
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-music {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff6ef;
+      border: 2px solid #f3cdb5;
+      color: #6b4f3c;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.25s;
+      font-size: 0.9rem;
+      font-family: 'Quicksand', sans-serif;
+    }
+    .btn-music:hover {
+      background: #ffe8da;
+      transform: translateY(-2px);
+    }
+    .btn-music.playing {
+      background: linear-gradient(145deg, #ffb3c6, #ffdbb5);
+      border-color: #f08080;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(240,128,128,0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(240,128,128,0); }
     }
     .btn-back {
       display: inline-flex;
@@ -158,6 +191,29 @@
       box-shadow: 0 0 0 3px rgba(240,128,128,0.2);
     }
     .name-input::placeholder { color: #c4a992; }
+    .music-info {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 20px;
+      border: 2px solid #f3cdb5;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      color: #9b7b6b;
+      font-weight: 600;
+    }
+    .music-info i {
+      color: #f08080;
+    }
+    .music-info .song-title {
+      color: #6b4f3c;
+      font-weight: 700;
+    }
     .notification {
       position: fixed;
       top: 20px;
@@ -184,6 +240,7 @@
       .toolbar { gap: 6px; }
       .tool-btn { padding: 8px 12px; font-size: 0.8rem; }
       .name-input { width: 130px; font-size: 0.85rem; }
+      .header-right { width: 100%; justify-content: space-between; }
     }
   </style>
 </head>
@@ -193,9 +250,21 @@
       <i class="fas fa-paint-brush" style="color: #f08080;"></i>
       Free Drawing Board
     </div>
-    <a href="index.html" class="btn-back">
-      <i class="fas fa-arrow-left"></i> Kembali
-    </a>
+    <div class="header-right">
+      <!-- Tombol Musik -->
+      <button class="btn-music" id="btnMusic" title="Play/Pause musik">
+        <i class="fas fa-play" id="musicIcon"></i> <span id="musicBtnText">Play Musik</span>
+      </button>
+      <a href="index.html" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Kembali
+      </a>
+    </div>
+  </div>
+
+  <!-- Info Lagu -->
+  <div class="music-info">
+    <i class="fas fa-music"></i>
+    <span>Sedang diputar: <span class="song-title" id="songTitle">-</span></span>
   </div>
 
   <div class="canvas-container">
@@ -236,6 +305,21 @@
       const canvas = document.getElementById('drawingCanvas');
       const ctx = canvas.getContext('2d');
       
+      // ====== ELEMEN ======
+      const colorPicker = document.getElementById('colorPicker');
+      const sizeSlider = document.getElementById('sizeSlider');
+      const sizeDisplay = document.getElementById('sizeDisplay');
+      const btnEraser = document.getElementById('btnEraser');
+      const btnClear = document.getElementById('btnClear');
+      const btnUndo = document.getElementById('btnUndo');
+      const btnDownload = document.getElementById('btnDownload');
+      const nameInput = document.getElementById('nameInput');
+      const btnMusic = document.getElementById('btnMusic');
+      const musicIcon = document.getElementById('musicIcon');
+      const musicBtnText = document.getElementById('musicBtnText');
+      const songTitle = document.getElementById('songTitle');
+
+      // ====== CANVAS RESIZE ======
       function resizeCanvas() {
         const container = canvas.parentElement;
         const width = container.clientWidth - 4;
@@ -255,6 +339,7 @@
         }
       });
 
+      // ====== STATE DRAWING ======
       let isDrawing = false;
       let lastX = 0;
       let lastY = 0;
@@ -264,15 +349,88 @@
       let undoStack = [];
       let maxUndo = 20;
 
-      const colorPicker = document.getElementById('colorPicker');
-      const sizeSlider = document.getElementById('sizeSlider');
-      const sizeDisplay = document.getElementById('sizeDisplay');
-      const btnEraser = document.getElementById('btnEraser');
-      const btnClear = document.getElementById('btnClear');
-      const btnUndo = document.getElementById('btnUndo');
-      const btnDownload = document.getElementById('btnDownload');
-      const nameInput = document.getElementById('nameInput');
+      // ====== MUSIK / PLAYLIST ======
+      // Ganti nama file & judul lagu di sini
+      const playlist = [
+        { file: 'bothering.mp3', title: 'Lagu Pertama' },
+        { file: 'sorrow.mp3', title: 'Lagu Kedua' }
+      ];
+      let currentSongIndex = 0;
+      let audioElement = null;
+      let isPlaying = false;
+      let userPaused = false; // track kalau user pause manual
 
+      function loadSong(index) {
+        if (index >= playlist.length) {
+          // Semua lagu selesai
+          songTitle.textContent = 'Semua lagu selesai 🎵';
+          isPlaying = false;
+          musicIcon.className = 'fas fa-play';
+          musicBtnText.textContent = 'Play Musik';
+          btnMusic.classList.remove('playing');
+          return;
+        }
+        
+        const song = playlist[index];
+        currentSongIndex = index;
+        
+        if (audioElement) {
+          audioElement.pause();
+          audioElement = null;
+        }
+        
+        audioElement = new Audio(song.file);
+        audioElement.volume = 0.6;
+        
+        // Auto lanjut ke lagu berikutnya
+        audioElement.addEventListener('ended', () => {
+          if (!userPaused) {
+            loadSong(index + 1);
+            if (index + 1 < playlist.length) {
+              audioElement.play();
+            }
+          }
+        });
+        
+        songTitle.textContent = song.title;
+      }
+
+      function playMusic() {
+        if (!audioElement) {
+          loadSong(0);
+        }
+        audioElement.play().then(() => {
+          isPlaying = true;
+          userPaused = false;
+          musicIcon.className = 'fas fa-pause';
+          musicBtnText.textContent = 'Pause';
+          btnMusic.classList.add('playing');
+        }).catch(err => {
+          console.log('Gagal memutar:', err);
+          showNotification('⚠️ Gagal memutar musik. Cek file MP3-nya!');
+        });
+      }
+
+      function pauseMusic() {
+        if (audioElement) {
+          audioElement.pause();
+          isPlaying = false;
+          userPaused = true;
+          musicIcon.className = 'fas fa-play';
+          musicBtnText.textContent = 'Play Musik';
+          btnMusic.classList.remove('playing');
+        }
+      }
+
+      btnMusic.addEventListener('click', () => {
+        if (isPlaying) {
+          pauseMusic();
+        } else {
+          playMusic();
+        }
+      });
+
+      // ====== DRAWING FUNCTIONS ======
       ctx.fillStyle = '#fffaf5';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       saveState();
