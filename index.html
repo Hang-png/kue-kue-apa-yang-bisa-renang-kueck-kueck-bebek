@@ -449,7 +449,7 @@
     </a>
 
     <div class="music-indicator" id="musicIndicator">
-      <i class="fas fa-music"></i> musik: -
+      <i class="fas fa-music"></i> musik: <span id="currentSongText">-</span>
     </div>
   </div>
 
@@ -481,7 +481,7 @@
         </div>
         <div class="photo-card" data-image="foto3.jpg" data-caption="semangat kakak ilustrator wkwk">
           <img src="foto3.jpg" alt="foto lucu 3" draggable="false">
-          <div class="message">semangat kakak ilustrator</div>
+          <div class="message">semangat ngegambarnya</div>
         </div>
       </div>
     </div>
@@ -516,6 +516,7 @@
       const lightboxImage = document.getElementById('lightboxImage');
       const lightboxCaption = document.getElementById('lightboxCaption');
       const lightboxClose = document.getElementById('lightboxClose');
+      const currentSongText = document.getElementById('currentSongText');
 
       let isCakeBlown = false;
       let micActive = false;
@@ -525,15 +526,44 @@
       let mediaStream = null;
       let audioElement = null;
       
-      const musicUrl = 'mis-u.mp3';
+      // ====== PLAYLIST LAGU ======
+      // Tambahkan lagu di sini (urut dari pertama ke terakhir)
+      const playlist = [
+        { file: 'mis-u.mp3', title: 'Lagu Pertama' },
+        { file: 'sorrow.mp3', title: 'Lagu Kedua' }
+      ];
+      let currentSongIndex = 0;
       
-      function playMusic() {
-        if (!audioElement) {
-          audioElement = new Audio(musicUrl);
-          audioElement.loop = true;
-          audioElement.volume = 0.6;
+      function playSong(index) {
+        if (index >= playlist.length) {
+          // Semua lagu sudah selesai
+          currentSongText.textContent = 'Semua lagu selesai 🎵';
+          return;
         }
-        audioElement.play().catch(err => { console.log('Gagal memutar musik:', err); });
+        
+        const song = playlist[index];
+        currentSongIndex = index;
+        
+        if (audioElement) {
+          audioElement.pause();
+          audioElement = null;
+        }
+        
+        audioElement = new Audio(song.file);
+        audioElement.volume = 0.6;
+        
+        // Setelah lagu selesai, lanjut ke lagu berikutnya
+        audioElement.addEventListener('ended', () => {
+          console.log('Lagu selesai:', song.title);
+          playSong(index + 1);
+        });
+        
+        audioElement.play().then(() => {
+          currentSongText.textContent = song.title;
+        }).catch(err => {
+          console.log('Gagal memutar lagu:', err);
+          currentSongText.textContent = '⚠️ Gagal memutar lagu';
+        });
       }
 
       function blowOutCandles() {
@@ -542,8 +572,11 @@
         flames.forEach(flame => { flame.classList.add('out'); });
         giftbox.classList.remove('hidden');
         generateConfetti();
-        playMusic();
-        micStatus.textContent = 'Kotak Mistery';
+        
+        // Mulai playlist dari lagu pertama
+        playSong(0);
+        
+        micStatus.textContent = ':v ';
       }
 
       cakeArea.addEventListener('click', (e) => {
