@@ -109,15 +109,15 @@
       border-color: #f0ba8a;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .tool-btn.ig-btn {
-      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-      color: white;
-      border: 2px solid #bc1888;
+    .tool-btn.download-btn {
+      background: linear-gradient(145deg, #a8e6cf, #d4edda);
+      border-color: #7bc8a4;
+      color: #2d6a4f;
       font-weight: 700;
     }
-    .tool-btn.ig-btn:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 12px 25px rgba(188,24,136,0.4);
+    .tool-btn.download-btn:hover {
+      background: linear-gradient(145deg, #8ed9b5, #b8e0c0);
+      box-shadow: 0 10px 20px rgba(123,200,164,0.4);
     }
     .color-picker {
       width: 40px;
@@ -158,162 +158,6 @@
       box-shadow: 0 0 0 3px rgba(240,128,128,0.2);
     }
     .name-input::placeholder { color: #c4a992; }
-    
-    /* Modal IG Share */
-    .ig-modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      animation: fadeIn 0.4s ease;
-    }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .ig-modal-content {
-      background: linear-gradient(145deg, #fffaf5, #fff0e6);
-      border-radius: 30px;
-      padding: 30px 25px;
-      max-width: 450px;
-      width: 100%;
-      position: relative;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-      animation: slideUp 0.5s cubic-bezier(0.2,0.8,0.2,1);
-      text-align: center;
-    }
-    @keyframes slideUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .ig-icon {
-      font-size: 4rem;
-      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 15px;
-    }
-    .ig-modal-title {
-      font-size: 1.5rem;
-      color: #6b4f3c;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-    .ig-modal-desc {
-      font-size: 0.95rem;
-      color: #9b7b6b;
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-    .ig-username {
-      background: #fff3ea;
-      padding: 12px 20px;
-      border-radius: 15px;
-      font-weight: 700;
-      color: #bc1888;
-      font-size: 1.1rem;
-      margin-bottom: 20px;
-      display: inline-block;
-      border: 2px dashed #ffb3c6;
-    }
-    .ig-preview {
-      width: 100%;
-      max-height: 200px;
-      object-fit: contain;
-      border-radius: 15px;
-      background: #fffaf5;
-      border: 2px solid #f3cdb5;
-      margin-bottom: 20px;
-    }
-    .ig-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .ig-btn-primary {
-      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      border-radius: 30px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-family: 'Quicksand', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      box-shadow: 0 10px 20px rgba(188,24,136,0.3);
-    }
-    .ig-btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 30px rgba(188,24,136,0.4);
-    }
-    .ig-btn-secondary {
-      background: #fff6ef;
-      color: #6b4f3c;
-      border: 2px solid #f3cdb5;
-      padding: 12px 25px;
-      border-radius: 30px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.25s;
-      font-family: 'Quicksand', sans-serif;
-    }
-    .ig-btn-secondary:hover {
-      background: #ffe8da;
-      transform: translateY(-2px);
-    }
-    .ig-close {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #fff0e6;
-      border: 2px solid #f3cdb5;
-      color: #6b4f3c;
-      font-size: 1.5rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .ig-close:hover {
-      background: #ffdbb5;
-      transform: rotate(90deg);
-    }
-    .steps {
-      text-align: left;
-      background: #fffaf5;
-      padding: 15px 20px;
-      border-radius: 15px;
-      margin-bottom: 20px;
-      border: 2px dashed #f3cdb5;
-    }
-    .steps-title {
-      font-weight: 700;
-      color: #6b4f3c;
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-    }
-    .steps ol {
-      padding-left: 20px;
-      color: #9b7b6b;
-      font-size: 0.85rem;
-      line-height: 1.7;
-    }
-    .steps ol li {
-      margin-bottom: 5px;
-    }
     .notification {
       position: fixed;
       top: 20px;
@@ -335,7 +179,6 @@
       from { transform: translateX(100%); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }
     }
-    .hidden { display: none !important; }
     @media (max-width: 600px) {
       .drawing-title { font-size: 1.5rem; }
       .toolbar { gap: 6px; }
@@ -381,55 +224,15 @@
       <i class="fas fa-undo"></i> Undo
     </button>
 
-    <input type="text" class="name-input" id="nameInput" placeholder="Nama kamu..." maxlength="30">
+    <input type="text" class="name-input" id="nameInput" placeholder="Nama file..." maxlength="30">
 
-    <!-- Tombol Share ke Instagram -->
-    <button class="tool-btn ig-btn" id="btnShareIG" title="Kirim gambar ke Instagram aku">
-      <i class="fab fa-instagram"></i> Share ke IG
+    <button class="tool-btn download-btn" id="btnDownload" title="Download gambar">
+      <i class="fas fa-download"></i> Download PNG
     </button>
-  </div>
-
-  <!-- Modal Share IG -->
-  <div class="ig-modal-overlay hidden" id="igModal">
-    <div class="ig-modal-content">
-      <button class="ig-close" id="closeIgModal">&times;</button>
-      <div class="ig-icon">
-        <i class="fab fa-instagram"></i>
-      </div>
-      <div class="ig-modal-title">Kirim ke Instagram</div>
-      <div class="ig-modal-desc">Gambar kamu akan dikirim ke akun Instagram aku</div>
-      
-      <!-- GANTI USERNAME IG KAMU DI SINI -->
-      <div class="ig-username">@hng_woy</div>
-      
-      <img id="igPreview" class="ig-preview" src="" alt="Preview gambar">
-      
-      <div class="steps">
-        <div class="steps-title">📝 Cara Kirim:</div>
-        <ol>
-          <li>Klik tombol <b>Download & Buka IG</b> di bawah</li>
-          <li>Gambar akan otomatis ke-download</li>
-          <li>Instagram akan terbuka di tab baru</li>
-          <li>Kirim gambar via <b>DM ke @hng_woy</b></li>
-        </ol>
-      </div>
-      
-      <div class="ig-actions">
-        <button class="ig-btn-primary" id="btnDownloadAndOpen">
-          <i class="fas fa-download"></i> Download & Buka IG
-        </button>
-        <button class="ig-btn-secondary" id="btnCancelIg">
-          Batal
-        </button>
-      </div>
-    </div>
   </div>
 
   <script>
     (function(){
-      // ====== GANTI USERNAME INSTAGRAM KAMU DI SINI ======
-      const INSTAGRAM_USERNAME = 'hng_woy'; // <-- GANTI!
-      
       const canvas = document.getElementById('drawingCanvas');
       const ctx = canvas.getContext('2d');
       
@@ -443,7 +246,14 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
       resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        if (undoStack.length > 0) {
+          const img = new Image();
+          img.onload = () => ctx.drawImage(img, 0, 0);
+          img.src = undoStack[undoStack.length - 1];
+        }
+      });
 
       let isDrawing = false;
       let lastX = 0;
@@ -460,15 +270,8 @@
       const btnEraser = document.getElementById('btnEraser');
       const btnClear = document.getElementById('btnClear');
       const btnUndo = document.getElementById('btnUndo');
-      const btnShareIG = document.getElementById('btnShareIG');
+      const btnDownload = document.getElementById('btnDownload');
       const nameInput = document.getElementById('nameInput');
-      
-      // Modal elements
-      const igModal = document.getElementById('igModal');
-      const closeIgModal = document.getElementById('closeIgModal');
-      const btnDownloadAndOpen = document.getElementById('btnDownloadAndOpen');
-      const btnCancelIg = document.getElementById('btnCancelIg');
-      const igPreview = document.getElementById('igPreview');
 
       ctx.fillStyle = '#fffaf5';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -558,9 +361,7 @@
 
       function saveState() {
         undoStack.push(canvas.toDataURL());
-        if (undoStack.length > maxUndo) {
-          undoStack.shift();
-        }
+        if (undoStack.length > maxUndo) undoStack.shift();
       }
 
       function undo() {
@@ -574,68 +375,27 @@
         img.src = undoStack[undoStack.length - 1];
       }
 
-      // ====== SHARE KE INSTAGRAM ======
-      function openIgModal() {
-        // Set preview
-        igPreview.src = canvas.toDataURL('image/png');
-        igModal.classList.remove('hidden');
-      }
-
-      function closeIgModalFunc() {
-        igModal.classList.add('hidden');
-      }
-
-      btnShareIG.addEventListener('click', openIgModal);
-      closeIgModal.addEventListener('click', closeIgModalFunc);
-      btnCancelIg.addEventListener('click', closeIgModalFunc);
-      
-      igModal.addEventListener('click', (e) => {
-        if (e.target === igModal) closeIgModalFunc();
-      });
-
-      btnDownloadAndOpen.addEventListener('click', () => {
-        // 1. Download gambar
-        const dataURL = canvas.toDataURL('image/png');
-        const name = nameInput.value.trim() || 'gambar';
+      // ====== DOWNLOAD ======
+      btnDownload.addEventListener('click', () => {
+        const name = nameInput.value.trim() || 'gambar-ku';
         const filename = name.toLowerCase().replace(/\s+/g, '-') + '.png';
         
+        const dataURL = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.download = filename;
         link.href = dataURL;
         link.click();
         
-        // Show notification
-        showNotification('✅ Gambar ter-download! Buka IG untuk kirim...');
-        
-        // 2. Buka Instagram setelah delay singkat
-        setTimeout(() => {
-          window.open(`https://www.instagram.com/${hng_woy}/`, '_blank');
-        }, 800);
-        
-        // 3. Close modal
-        setTimeout(() => {
-          closeIgModalFunc();
-        }, 1500);
+        showNotification('✅ Gambar berhasil di-download!');
       });
 
-      // ====== NOTIFICATION ======
       function showNotification(message) {
         const notif = document.createElement('div');
         notif.className = 'notification';
         notif.innerHTML = message;
         document.body.appendChild(notif);
-        
-        setTimeout(() => {
-          notif.remove();
-        }, 3500);
+        setTimeout(() => notif.remove(), 3000);
       }
-
-      // Escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !igModal.classList.contains('hidden')) {
-          closeIgModalFunc();
-        }
-      });
     })();
   </script>
 </body>
